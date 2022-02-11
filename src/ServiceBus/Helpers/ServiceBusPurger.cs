@@ -19,14 +19,14 @@
 //=======================================================================================
 #endregion
 
-using Azure.Messaging.ServiceBus;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Azure.Messaging.ServiceBus;
 
 namespace ServiceBusExplorer.ServiceBus.Helpers
 {
@@ -100,7 +100,6 @@ namespace ServiceBusExplorer.ServiceBus.Helpers
         {
             long totalMessagesPurged = 0;
             var consecutiveSessionTimeOuts = 0;
-            ServiceBusSessionReceiver sessionReceiver = null;
             long messagesToPurgeCount = await GetMessageCount(entity, deadLetterQueueData: false)
                 .ConfigureAwait(false);
 
@@ -117,9 +116,9 @@ namespace ServiceBusExplorer.ServiceBus.Helpers
 
                 while (consecutiveSessionTimeOuts < enoughZeroReceives && totalMessagesPurged < messagesToPurgeCount)
                 {
-                    sessionReceiver = await CreateServiceBusSessionReceiver(entity,
-                        client,
-                        purgeDeadLetterQueueInstead: false)
+                    var sessionReceiver = await CreateServiceBusSessionReceiver(entity,
+                            client,
+                            purgeDeadLetterQueueInstead: false)
                         .ConfigureAwait(false);
 
                     var consecutiveZeroBatchReceives = 0;
